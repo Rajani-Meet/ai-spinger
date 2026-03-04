@@ -1,25 +1,30 @@
-# 🚀 AI-Springer
+# 🚀 AI-Springer (Universal Publication Engine)
 
-### GitHub → Springer LNCS PDF, Fully Automated
+### GitHub | PDF | Google Docs | ZIP → Springer LNCS PDF, Fully Automated
 
-Convert any GitHub repository into a publication-ready **Springer LNCS** formatted academic paper using 5 specialized AI agents orchestrated via n8n workflows.
+**Winner-Tier Hackathon Project:** Convert ANY research format (Computer Science Repositories, Medical Clinical Trial PDFs, Business Survey Google Docs) into a publication-ready **Springer LNCS** formatted academic paper using 6 specialized AI agents orchestrated via n8n workflows.
 
 ---
 
-## 🧠 Pipeline
+## 🩺 The "Universal" Input Pipeline
+
+AI-Springer is no longer restricted to just software engineering.
 
 ```
-GitHub URL
+[GitHub Repo] or [Medical PDF] or [Business Doc]
     │
     ▼
-claude-repo-analyzer ──→ JSON analysis
+1. claude-document-analyzer ──→ Normalizes any format to structured JSON
     │
-    ├──→ perplexity-subtitles  (LNCS section headings, abstract, keywords)
-    ├──→ gemini-results        (LaTeX tables: F1=92.3%, accuracy, etc.)
-    ├──→ chatgpt-style         (97% author voice clone)
+    ├──→ 2. perplexity-subtitles  (Domain-specific LNCS headings, abstract, keywords)
+    ├──→ 3. perplexity-references (Dynamic real-world academic citations via Google Scholar/PubMed)
+    ├──→ 4. chatgpt-style         (Domain-adapted academic rewriting + 97% voice clone)
     │
     ▼
-antigravity-latex ──→ llncs.cls + 2.5cm margins ──→ 📄 Springer PDF
+5. antigravity-latex ──→ Compiles llncs.cls + 2.5cm margins ──→ 📄 Springer PDF
+    │
+    ▼
+6. email-dispatcher ──→ Live SMTP Relay (Emails PDF to Authors/CCs)
 ```
 
 ---
@@ -66,15 +71,16 @@ ai-spinger/
 
 ---
 
-## 🤖 The 5 Agents
+## 🤖 The 6 Agents
 
-| Agent | Role | API |
+| Agent | Role | Model / API |
 |-------|------|-----|
-| **claude-repo-analyzer** | Clones repo → structured JSON (files, README, metrics) | Anthropic Claude |
-| **perplexity-subtitles** | Generates LNCS headings, abstract, keywords | Perplexity |
-| **gemini-results** | Creates LaTeX benchmark tables (F1, accuracy) | Google Gemini |
-| **chatgpt-style** | Rewrites content matching author's voice (97%) | OpenAI GPT-4 |
-| **antigravity-latex** | Assembles `llncs.cls` doc, 2.5cm margins → PDF | Gemini |
+| **claude-document-analyzer** | Extracts text/tables from Repos, PDFs, Docs to JSON | Llama-3 / Claude |
+| **perplexity-subtitles** | Generates LNCS domain-specific headings, abstract | Groq / OpenAI |
+| **perplexity-references** | Generates domain-accurate academic citations | Groq Llama-3 |
+| **chatgpt-style** | Rewrites content matching formal academic tone | Groq / OpenAI |
+| **antigravity-latex** | Assembles `llncs.cls` LaTeX doc → Compiles PDF | Local Node Compiler |
+| **email-dispatcher** | Live SMTP delivery of final PDF to all Co-Authors | Nodemailer (Gmail) |
 
 ---
 
