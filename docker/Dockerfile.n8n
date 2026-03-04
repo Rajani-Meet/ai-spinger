@@ -1,0 +1,21 @@
+# Dockerfile.n8n — Custom n8n image with AI-Springer workflows pre-loaded
+FROM n8nio/n8n:latest
+
+USER root
+
+# Copy workflow definitions
+COPY ../n8n-workflow/ /home/node/workflows/
+
+# Set environment defaults
+ENV N8N_BASIC_AUTH_ACTIVE=true \
+    N8N_PORT=5678 \
+    N8N_PROTOCOL=http \
+    GENERIC_TIMEZONE=UTC \
+    NODE_ENV=production
+
+USER node
+
+EXPOSE 5678
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD wget -qO- http://localhost:5678/healthz || exit 1

@@ -1,0 +1,423 @@
+{
+    "id": "github-to-pdf-pipeline",
+    "name": "GitHub to Springer PDF Pipeline",
+    "active": true,
+    "nodes": [
+        {
+            "parameters": {},
+            "id": "webhook-trigger",
+            "name": "Manual Execute",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                0,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "github-to-pdf",
+                "responseMode": "lastNode",
+                "options": {}
+            },
+            "id": "webhook-api",
+            "name": "Webhook API",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1.1,
+            "webhookId": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+            "position": [
+                0,
+                150
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "try {\n  let body = ($json && $json.body) || ($json && $json.query) || $json || {};\n  if (typeof body === 'string') {\n    try { body = JSON.parse(body); } catch(e) {}\n  }\n  \n  const authors = Array.isArray(body.authors) && body.authors.length > 0 ? body.authors : [\n    { name: \"Rajani-Meet\", affiliation: \"Research Institution\", email: \"rajani-meet@research.edu\" },\n    { name: \"Jane Smith\", affiliation: \"University of Technology\", email: \"jsmith@university.edu\" }\n  ];\n  \n  return [{\n    json: {\n      github_url: body.github_url || ($json && $json.github_url) || 'https://github.com/Rajani-Meet/CodeForge-Hub',\n      branch: body.branch || ($json && $json.branch) || 'main',\n      authors: authors,\n      style_reference: body.style_reference || '',\n      project_overview: body.project_overview || '',\n      target_pages: body.target_pages ? parseInt(body.target_pages) : 10\n    }\n  }];\n} catch (e) {\n  return [{ json: { error: e.message, github_url: 'https://github.com/Rajani-Meet/CodeForge-Hub', branch: 'main' } }];\n}"
+            },
+            "id": "standardize-input",
+            "name": "Standardize Input",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                200,
+                300
+            ],
+            "onError": "continueErrorOutput"
+        },
+        {
+            "parameters": {
+                "url": "http://frontend:3000/api/agents/claude-repo-analyzer",
+                "method": "POST",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ { github_url: $json.github_url, branch: $json.branch } }}",
+                "options": {
+                    "timeout": 120000
+                }
+            },
+            "id": "claude-repo-analyzer",
+            "name": "1. Claude Repo Analyzer",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                440,
+                300
+            ],
+            "retryOnFail": true,
+            "maxTries": 3,
+            "onError": "continueErrorOutput"
+        },
+        {
+            "parameters": {
+                "url": "http://frontend:3000/api/agents/perplexity-subtitles",
+                "method": "POST",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ { repo_analysis: $node['1. Claude Repo Analyzer'].json, authors: $('Standardize Input').first().json.authors, project_overview: $('Standardize Input').first().json.project_overview } }}",
+                "options": {
+                    "timeout": 120000
+                }
+            },
+            "id": "perplexity-subtitles",
+            "name": "2a. Perplexity Subtitles",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                700,
+                300
+            ],
+            "retryOnFail": true,
+            "maxTries": 3,
+            "onError": "continueErrorOutput"
+        },
+        {
+            "parameters": {
+                "url": "http://frontend:3000/api/agents/gemini-results",
+                "method": "POST",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ { repo_analysis: $node['1. Claude Repo Analyzer'].json } }}",
+                "options": {
+                    "timeout": 120000
+                }
+            },
+            "id": "gemini-results",
+            "name": "2b. Gemini Results",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                960,
+                300
+            ],
+            "retryOnFail": true,
+            "maxTries": 3,
+            "onError": "continueErrorOutput"
+        },
+        {
+            "parameters": {
+                "url": "http://frontend:3000/api/agents/chatgpt-style",
+                "method": "POST",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ { repo_analysis: $node['1. Claude Repo Analyzer'].json, style_reference: $('Standardize Input').first().json.style_reference, project_overview: $('Standardize Input').first().json.project_overview, target_pages: $('Standardize Input').first().json.target_pages } }}",
+                "options": {
+                    "timeout": 120000
+                }
+            },
+            "id": "chatgpt-style",
+            "name": "2c. ChatGPT Style",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                1220,
+                300
+            ],
+            "retryOnFail": true,
+            "maxTries": 3,
+            "onError": "continueErrorOutput"
+        },
+        {
+            "parameters": {
+                "url": "http://frontend:3000/api/agents/perplexity-references",
+                "method": "POST",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ { repo_analysis: $node['1. Claude Repo Analyzer'].json } }}",
+                "options": {
+                    "timeout": 120000
+                }
+            },
+            "id": "perplexity-references",
+            "name": "2d. Perplexity References",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                1480,
+                300
+            ],
+            "retryOnFail": true,
+            "maxTries": 3,
+            "onError": "continueErrorOutput"
+        },
+        {
+            "parameters": {
+                "jsCode": "try {\n  return [{\n    json: {\n      subtitles: $('2a. Perplexity Subtitles').first().json || {},\n      tables: $('2b. Gemini Results').first().json || {},\n      styled_content: $('2c. ChatGPT Style').first().json || {},\n      repo_analysis: $('1. Claude Repo Analyzer').first().json || {},\n      references_data: $('2d. Perplexity References').first().json || {},\n      authors: $('Standardize Input').first().json.authors || []\n    }\n  }];\n} catch (e) {\n  return [{ json: { error: e.message, phase: 'assembly' } }];\n}"
+            },
+            "id": "final-assembly",
+            "name": "Final Data Assembly",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1740,
+                300
+            ],
+            "onError": "continueErrorOutput"
+        },
+        {
+            "parameters": {
+                "url": "http://frontend:3000/api/agents/antigravity-latex",
+                "method": "POST",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ $json }}",
+                "options": {
+                    "timeout": 300000
+                }
+            },
+            "id": "antigravity-latex",
+            "name": "3. Antigravity LaTeX \u2192 PDF",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                2000,
+                300
+            ],
+            "retryOnFail": true,
+            "maxTries": 2,
+            "onError": "continueErrorOutput"
+        },
+        {
+            "parameters": {
+                "jsCode": "const items = $input.all();\nconst errors = [];\nfor (const item of items) {\n  const data = item.json;\n  console.log('PIPELINE ERROR DATA: ', JSON.stringify(data, null, 2));\n  if (data.success === true || (data.sections && data.abstract)) continue;\n  let nodeName = data.node || (data.context && data.context.nodeName) || 'unknown';\n  let msg = 'Unknown error';\n  if (data.response && data.response.body) msg = JSON.stringify(data.response.body);\n  else if (data.message) msg = (typeof data.message === 'object') ? JSON.stringify(data.message) : data.message;\n  else if (data.error) msg = (typeof data.error === 'object') ? JSON.stringify(data.error) : data.error;\n  errors.push({ node: nodeName, message: msg });\n}\nif (errors.length === 0) return items;\nreturn [{ json: { success: false, errors: errors, message: 'Pipeline failed: ' + errors.map(e => e.message).join(' | ') } }];"
+            },
+            "id": "error-handler",
+            "name": "Error Handler",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                960,
+                650
+            ]
+        }
+    ],
+    "connections": {
+        "Manual Execute": {
+            "main": [
+                [
+                    {
+                        "node": "Standardize Input",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Webhook API": {
+            "main": [
+                [
+                    {
+                        "node": "Standardize Input",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Standardize Input": {
+            "main": [
+                [
+                    {
+                        "node": "1. Claude Repo Analyzer",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "1. Claude Repo Analyzer": {
+            "main": [
+                [
+                    {
+                        "node": "2a. Perplexity Subtitles",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Error Handler",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "2a. Perplexity Subtitles": {
+            "main": [
+                [
+                    {
+                        "node": "2b. Gemini Results",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Error Handler",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "2b. Gemini Results": {
+            "main": [
+                [
+                    {
+                        "node": "2c. ChatGPT Style",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Error Handler",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "2c. ChatGPT Style": {
+            "main": [
+                [
+                    {
+                        "node": "2d. Perplexity References",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Error Handler",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "2d. Perplexity References": {
+            "main": [
+                [
+                    {
+                        "node": "Final Data Assembly",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Error Handler",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Final Data Assembly": {
+            "main": [
+                [
+                    {
+                        "node": "3. Antigravity LaTeX \u2192 PDF",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Error Handler",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "3. Antigravity LaTeX \u2192 PDF": {
+            "main": [
+                [],
+                [
+                    {
+                        "node": "Error Handler",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

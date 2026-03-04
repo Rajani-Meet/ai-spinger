@@ -1,0 +1,115 @@
+{
+    "family": "ai-springer-task",
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "512",
+    "memory": "1024",
+    "executionRoleArn": "arn:aws:iam::ACCOUNT_ID:role/ecsTaskExecutionRole",
+    "taskRoleArn": "arn:aws:iam::ACCOUNT_ID:role/ecsTaskRole",
+    "containerDefinitions": [
+        {
+            "name": "n8n",
+            "image": "ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/ai-springer-n8n:latest",
+            "essential": true,
+            "portMappings": [
+                {
+                    "containerPort": 5678,
+                    "protocol": "tcp"
+                }
+            ],
+            "environment": [
+                {
+                    "name": "N8N_BASIC_AUTH_ACTIVE",
+                    "value": "true"
+                },
+                {
+                    "name": "N8N_PORT",
+                    "value": "5678"
+                },
+                {
+                    "name": "N8N_PROTOCOL",
+                    "value": "https"
+                },
+                {
+                    "name": "NODE_ENV",
+                    "value": "production"
+                }
+            ],
+            "secrets": [
+                {
+                    "name": "N8N_BASIC_AUTH_USER",
+                    "valueFrom": "arn:aws:secretsmanager:us-east-1:ACCOUNT_ID:secret:ai-springer/n8n:username::"
+                },
+                {
+                    "name": "N8N_BASIC_AUTH_PASSWORD",
+                    "valueFrom": "arn:aws:secretsmanager:us-east-1:ACCOUNT_ID:secret:ai-springer/n8n:password::"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/ai-springer",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "n8n"
+                }
+            },
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "wget -qO- http://localhost:5678/healthz || exit 1"
+                ],
+                "interval": 30,
+                "timeout": 10,
+                "retries": 3,
+                "startPeriod": 60
+            }
+        },
+        {
+            "name": "frontend",
+            "image": "ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/ai-springer-frontend:latest",
+            "essential": true,
+            "portMappings": [
+                {
+                    "containerPort": 3000,
+                    "protocol": "tcp"
+                }
+            ],
+            "environment": [
+                {
+                    "name": "NODE_ENV",
+                    "value": "production"
+                },
+                {
+                    "name": "NEXT_PUBLIC_N8N_WEBHOOK_URL",
+                    "value": "https://n8n.ai-springer.example.com/webhook"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/ai-springer",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "frontend"
+                }
+            },
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "wget -qO- http://localhost:3000/api/health || exit 1"
+                ],
+                "interval": 30,
+                "timeout": 10,
+                "retries": 3,
+                "startPeriod": 15
+            },
+            "dependsOn": [
+                {
+                    "containerName": "n8n",
+                    "condition": "HEALTHY"
+                }
+            ]
+        }
+    ]
+}

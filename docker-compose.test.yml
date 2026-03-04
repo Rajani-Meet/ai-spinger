@@ -1,0 +1,64 @@
+# docker-compose.test.yml — Local n8n test environment for AI-Springer
+# Usage: docker-compose -f docker-compose.test.yml up -d
+
+services:
+  # ── n8n Workflow Engine ─────────────────────────────────────
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: ai-springer-n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_USER_MANAGEMENT_DISABLED=true
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678/
+      - GENERIC_TIMEZONE=Asia/Kolkata
+      # Agent webhook endpoints
+      - CLAUDE_REPO_WEBHOOK=http://frontend:3000/api/agents/claude-repo-analyzer
+      - PERPLEXITY_SUBTITLES_WEBHOOK=http://frontend:3000/api/agents/perplexity-subtitles
+      - GEMINI_RESULTS_WEBHOOK=http://frontend:3000/api/agents/gemini-results
+      - CHATGPT_STYLE_WEBHOOK=http://frontend:3000/api/agents/chatgpt-style
+      - ANTIGRAVITY_LATEX_WEBHOOK=http://frontend:3000/api/agents/antigravity-latex
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./n8n-workflow:/home/node/workflows
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:5678/healthz || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ── Frontend (Next.js) ─────────────────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    container_name: ai-springer-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+    environment:
+      - NEXT_PUBLIC_N8N_WEBHOOK_URL=http://localhost:5678/webhook
+      - NEXT_PUBLIC_API_URL=http://localhost:3000
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:3000/api/health || exit 1" ]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 45s
+    depends_on:
+      n8n:
+        condition: service_healthy
+
+volumes:
+  n8n_data:
+    driver: local
