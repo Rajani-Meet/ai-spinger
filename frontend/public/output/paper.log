@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Alpine Linux) (preloaded format=pdflatex 2026.3.4)  4 MAR 2026 22:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Alpine Linux) (preloaded format=pdflatex 2026.3.4)  4 MAR 2026 23:14
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -294,7 +294,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-Overfull \hbox (10.01286pt too wide) in paragraph at lines 20--21
+Overfull \hbox (10.01286pt too wide) in paragraph at lines 22--23
 \T1/cmr/bx/n/10 Keywords:\T1/cmr/m/n/10 freelance, in-dia, soft-ware en-gi-neer
 -ing, sys-tem ar-chi-tec-ture, dis-tributed
  []
@@ -304,14 +304,23 @@ Overfull \hbox (10.01286pt too wide) in paragraph at lines 20--21
 [1
 
 {/usr/share/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 5105) has occurred while \output is active []
 
 
 
 [2]
+Overfull \hbox (1.1803pt too wide) in paragraph at lines 40--41
+\T1/cmr/m/n/10 dented op-por-tu-ni-ties for de-vel-op-ing highly so-phis-ti-cat
+ed frame-works within Com-
+ []
+
+
 
 [3]
-Underfull \vbox (badness 5105) has occurred while \output is active []
+Overfull \hbox (3.3742pt too wide) in paragraph at lines 52--53
+\T1/cmr/m/n/10 thereby en-abling fully in-de-pen-dent com-po-nent evo-lu-tion a
+nd lo-cal-ized, im-mutable
+ []
 
 
 
@@ -320,34 +329,34 @@ Underfull \vbox (badness 5105) has occurred while \output is active []
 [5]
 
 [6]
-Overfull \hbox (3.3742pt too wide) in paragraph at lines 63--64
-\T1/cmr/m/n/10 thereby en-abling fully in-de-pen-dent com-po-nent evo-lu-tion a
-nd lo-cal-ized, im-mutable
- []
-
-
 
 [7]
 
 [8]
+Overfull \hbox (1.43024pt too wide) in paragraph at lines 118--119
+\T1/cmr/m/n/10 lightweight thread-ing prim-i-tives, and its re-mark-ably ex-ten
+-sive, community-driven
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 
 [9]
 
 [10]
 
 [11]
-Overfull \hbox (1.43024pt too wide) in paragraph at lines 141--142
-\T1/cmr/m/n/10 lightweight thread-ing prim-i-tives, and its re-mark-ably ex-ten
--sive, community-driven
+Overfull \hbox (7.51208pt too wide) in paragraph at lines 196--197
+\T1/cmr/m/n/10 The ex-cep-tion-ally rich ar-ray of em-pir-i-cal ex-per-i-men-ta
+l re-sults em-phat-i-cally demon-
  []
 
 
 
 [12]
-Overfull \hbox (1.43024pt too wide) in paragraph at lines 150--151
-\T1/cmr/m/n/10 lightweight thread-ing prim-i-tives, and its re-mark-ably ex-ten
--sive, community-driven
- []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
@@ -356,53 +365,16 @@ Overfull \hbox (1.43024pt too wide) in paragraph at lines 150--151
 [14]
 
 [15]
+Overfull \hbox (3.90186pt too wide) in paragraph at lines 229--230
+\T1/cmr/m/n/10 team-bAssem-bly (Wasm) in-te-gra-tion for ex-e-cut-ing com-pu-ta
+-tion-ally in-ten-sive edge-
+ []
+
+
 
 [16]
-Overfull \hbox (7.51208pt too wide) in paragraph at lines 250--251
-\T1/cmr/m/n/10 The ex-cep-tion-ally rich ar-ray of em-pir-i-cal ex-per-i-men-ta
-l re-sults em-phat-i-cally demon-
- []
-
-
-Underfull \vbox (badness 2158) has occurred while \output is active []
-
-
-
-[17]
-
-[18]
-
-[19]
-
-[20]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
-[21]
-Underfull \vbox (badness 1694) has occurred while \output is active []
-
-
-
-[22]
-Overfull \hbox (3.90186pt too wide) in paragraph at lines 302--303
-\T1/cmr/m/n/10 team-bAssem-bly (Wasm) in-te-gra-tion for ex-e-cut-ing com-pu-ta
--tion-ally in-ten-sive edge-
- []
-
-
-
-[23]
-Overfull \hbox (3.90186pt too wide) in paragraph at lines 309--310
-\T1/cmr/m/n/10 team-bAssem-bly (Wasm) in-te-gra-tion for ex-e-cut-ing com-pu-ta
--tion-ally in-ten-sive edge-
- []
-
-
-
-[24]
 ! Misplaced alignment tab character &.
-l.322 ...Q., Pinto, H. P. d. O., Kaplan, J., ... &
+l.241 ...Q., Pinto, H. P. d. O., Kaplan, J., ... &
                                                    Zaremba, W. (2021). Evalu...
 I can't figure out why you would want to use a tab mark
 here. If you just want an ampersand, the remedy is
@@ -412,17 +384,7 @@ you're probably due for more error messages, and you
 might try typing `S' now just to see what is salvageable.
 
 ! Misplaced alignment tab character &.
-l.325 Sun, C., Xia, X., Lo, D., Hou, D., &
-                                           Zhong, H. (2022). AI-assisted cod...
-I can't figure out why you would want to use a tab mark
-here. If you just want an ampersand, the remedy is
-simple: Just type `I\&' now. But if some right brace
-up above has ended a previous alignment prematurely,
-you're probably due for more error messages, and you
-might try typing `S' now just to see what is salvageable.
-
-! Misplaced alignment tab character &.
-l.328 Treude, C., &
+l.244 Treude, C., &
                     Filho, F. F. (2024). LLM-powered software engineering: A...
 I can't figure out why you would want to use a tab mark
 here. If you just want an ampersand, the remedy is
@@ -432,8 +394,8 @@ you're probably due for more error messages, and you
 might try typing `S' now just to see what is salvageable.
 
 ! Misplaced alignment tab character &.
-l.331 Dewan, P., &
-                   Shen, H. (1998). Collaborative workspace: A generalized a...
+l.247 ...en, P. T., Di Rocco, J., Di Ruscio, D., &
+                                                   Penta, M. D. (2019). Cros...
 I can't figure out why you would want to use a tab mark
 here. If you just want an ampersand, the remedy is
 simple: Just type `I\&' now. But if some right brace
@@ -442,8 +404,18 @@ you're probably due for more error messages, and you
 might try typing `S' now just to see what is salvageable.
 
 ! Misplaced alignment tab character &.
-l.334 Wang, J., Chen, Y., &
-                            Li, X. (2023). Real-time collaborative code edit...
+l.250 Barke, S., James, M. B., &
+                                 Polikarpova, N. (2023). Grounded copilot: H...
+I can't figure out why you would want to use a tab mark
+here. If you just want an ampersand, the remedy is
+simple: Just type `I\&' now. But if some right brace
+up above has ended a previous alignment prematurely,
+you're probably due for more error messages, and you
+might try typing `S' now just to see what is salvageable.
+
+! Misplaced alignment tab character &.
+l.253 Sun, C., Xia, X., Lo, D., Hou, D., &
+                                           Zhong, H. (2022). AI-assisted cod...
 I can't figure out why you would want to use a tab mark
 here. If you just want an ampersand, the remedy is
 simple: Just type `I\&' now. But if some right brace
@@ -453,20 +425,16 @@ might try typing `S' now just to see what is salvageable.
 
 
 
-[25] (/app/public/output/paper.aux)
+[17] (/app/public/output/paper.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
  ) 
 Here is how much of TeX's memory you used:
  2740 strings out of 475165
  38396 string characters out of 5766837
- 465929 words of memory out of 5000000
+ 464929 words of memory out of 5000000
  25738 multiletter control sequences out of 15000+600000
  568355 words of font info for 56 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
@@ -480,12 +448,13 @@ xmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0900.600pk> </root/.texlive2025/texmf-v
 ar/fonts/pk/ljfour/jknappen/ec/ecrm1000.600pk> </root/.texlive2025/texmf-var/fo
 nts/pk/ljfour/jknappen/ec/ecbx1440.600pk></usr/share/texmf-dist/fonts/type1/pub
 lic/amsfonts/cm/cmmi9.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmr7.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/latxfont/lcircle1.
-pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/latxfont/line10.pfb>
-Output written on /app/public/output/paper.pdf (25 pages, 185524 bytes).
+/cmr6.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/
+share/texmf-dist/fonts/type1/public/amsfonts/latxfont/lcircle1.pfb></usr/share/
+texmf-dist/fonts/type1/public/amsfonts/latxfont/line10.pfb>
+Output written on /app/public/output/paper.pdf (17 pages, 170970 bytes).
 PDF statistics:
- 462 PDF objects out of 1000 (max. 8388607)
- 101 compressed objects within 2 object streams
+ 442 PDF objects out of 1000 (max. 8388607)
+ 86 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

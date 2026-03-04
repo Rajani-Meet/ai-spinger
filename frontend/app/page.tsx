@@ -11,6 +11,7 @@ interface PipelineState {
     geminiResults: AgentStatus;
     chatgptStyle: AgentStatus;
     antigravityLatex: AgentStatus;
+    emailAuthors: AgentStatus;
 }
 
 const AGENTS = [
@@ -19,6 +20,7 @@ const AGENTS = [
     { key: "geminiResults", label: "Gemini Results", desc: "LaTeX tables" },
     { key: "chatgptStyle", label: "ChatGPT Style", desc: "97% voice clone" },
     { key: "antigravityLatex", label: "Antigravity LaTeX", desc: "LNCS → PDF" },
+    { key: "emailAuthors", label: "Email Dispatcher", desc: "Notify Co-authors" },
 ] as const;
 
 const PIPELINE_STEPS = [
@@ -26,11 +28,13 @@ const PIPELINE_STEPS = [
     { number: "2", title: "AI Analysis", description: "5 agents process your repo in parallel" },
     { number: "3", title: "LaTeX Assembly", description: "LNCS template with 2.5cm margins" },
     { number: "4", title: "Download PDF", description: "Publication-ready Springer paper" },
+    { number: "5", title: "Email Authors", description: "Dispatch to all co-authors" },
 ];
 
 export default function Home() {
     const [githubUrl, setGithubUrl] = useState("");
     const [targetPages, setTargetPages] = useState<number | "">(10);
+    const [domain, setDomain] = useState("Computer Science");
     const [projectOverview, setProjectOverview] = useState("");
     const [styleReference, setStyleReference] = useState("");
     const [authors, setAuthors] = useState<{ name: string, affiliation: string, email: string }[]>([
@@ -123,6 +127,7 @@ export default function Home() {
         geminiResults: "pending",
         chatgptStyle: "pending",
         antigravityLatex: "pending",
+        emailAuthors: "pending",
     });
 
     const N8N_WEBHOOK = "/api/n8n";
@@ -147,6 +152,7 @@ export default function Home() {
                     github_url: githubUrl,
                     branch: "main",
                     target_pages: targetPages,
+                    domain: domain,
                     project_overview: projectOverview,
                     style_reference: styleReference,
                     authors: authors
@@ -163,7 +169,25 @@ export default function Home() {
                 geminiResults: "done",
                 chatgptStyle: "done",
                 antigravityLatex: "done",
+                emailAuthors: "running",
             });
+
+            // Auto-email all authors
+            try {
+                await fetch('/api/agents/email-dispatcher', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        authors: authors,
+                        pdf_url: data.pdf_url || "#",
+                        domain: domain
+                    })
+                });
+                setPipeline(p => ({ ...p, emailAuthors: "done" }));
+            } catch (err) {
+                console.error("Email agent failed", err);
+                setPipeline(p => ({ ...p, emailAuthors: "error" }));
+            }
 
             setPdfUrl(data.pdf_url || "#");
             setZipUrl(data.zip_url || "#");
@@ -241,7 +265,7 @@ export default function Home() {
             {/* Hero */}
             <section className="hero" style={{ paddingTop: '20px' }}>
                 <h1>AI-Springer</h1>
-                <p className="subtitle">GitHub → Springer LNCS PDF, fully automated</p>
+                <p className="subtitle">Universal Publication Engine: GitHub | PDF | Docs | ZIP → Springer LNCS PDF</p>
             </section>
 
             {/* URL Input */}
@@ -250,9 +274,9 @@ export default function Home() {
                     <div className="input-wrapper">
                         <input
                             id="github-url-input"
-                            type="url"
+                            type="text"
                             className="url-input"
-                            placeholder="https://github.com/user/repo"
+                            placeholder="https://github.com/user/repo OR Drive/Dataset Link"
                             value={githubUrl}
                             onChange={(e) => setGithubUrl(e.target.value)}
                             disabled={isProcessing}
@@ -273,6 +297,17 @@ export default function Home() {
                             <div>
                                 <label className="form-label">Target Page Length (e.g. 10)</label>
                                 <input type="number" className="url-input" value={targetPages} onChange={e => setTargetPages(e.target.value === "" ? "" : parseInt(e.target.value))} style={{ width: "100%", padding: "12px" }} />
+                            </div>
+                            <div>
+                                <label className="form-label">Research Domain</label>
+                                <select className="url-input" value={domain} onChange={e => setDomain(e.target.value)} style={{ width: "100%", padding: "12px", appearance: "none", cursor: "pointer" }}>
+                                    <option value="Computer Science">Computer Science & Software</option>
+                                    <option value="Medicine & Clinical Research">Medicine & Clinical Research</option>
+                                    <option value="Biology & Genomics">Biology & Genomics</option>
+                                    <option value="Physics & Engineering">Physics & Engineering</option>
+                                    <option value="Business & Analytics">Business & Analytics</option>
+                                    <option value="Humanities & Social Sciences">Humanities & Social Sciences</option>
+                                </select>
                             </div>
                         </div>
 
