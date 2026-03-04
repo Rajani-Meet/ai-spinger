@@ -139,6 +139,11 @@ body {
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
+option {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
 .url-input::placeholder {
   color: var(--text-muted);
 }
@@ -281,10 +286,22 @@ body {
   flex-shrink: 0;
 }
 
-.status-dot.pending { background: var(--text-muted); }
-.status-dot.running { background: var(--warning); animation: pulse 1.5s infinite; }
-.status-dot.done    { background: var(--success); }
-.status-dot.error   { background: var(--error); }
+.status-dot.pending {
+  background: var(--text-muted);
+}
+
+.status-dot.running {
+  background: var(--warning);
+  animation: pulse 1.5s infinite;
+}
+
+.status-dot.done {
+  background: var(--success);
+}
+
+.status-dot.error {
+  background: var(--error);
+}
 
 .status-label {
   font-size: 0.9rem;
@@ -327,13 +344,27 @@ body {
 
 /* ── Animations ───────────────────────────── */
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .fade-in {
