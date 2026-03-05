@@ -2,7 +2,7 @@
 
 ### GitHub | PDF | Google Docs | ZIP → Springer LNCS PDF, Fully Automated
 
-**Winner-Tier Hackathon Project:** Convert ANY research format (Computer Science Repositories, Medical Clinical Trial PDFs, Business Survey Google Docs) into a publication-ready **Springer LNCS** formatted academic paper using 6 specialized AI agents orchestrated via n8n workflows.
+ Convert ANY research format (Computer Science Repositories, Medical Clinical Trial PDFs, Business Survey Google Docs) into a publication-ready **Springer LNCS** formatted academic paper using 6 specialized AI agents orchestrated via n8n workflows.
 
 ---
 
