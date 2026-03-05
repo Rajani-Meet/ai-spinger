@@ -76,6 +76,8 @@ export async function POST(req: NextRequest) {
         // Assemble the complete LaTeX document
         const latexDocument = `\\documentclass[runningheads]{llncs}
 \\usepackage[T1]{fontenc}
+\\usepackage{mathptmx}
+\\usepackage{times}
 \\usepackage{amsmath}
 \\usepackage{graphicx}
 \\newcommand{\\url}[1]{\\texttt{#1}}
